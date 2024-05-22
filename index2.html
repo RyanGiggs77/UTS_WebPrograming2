@@ -1,0 +1,335 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="h-screen bg-gray-100">
+    <div id="root"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const IconsSidebar = ({ setView }) => {
+            return (
+                <div className="w-16 bg-gray-800 flex flex-col items-center py-5">
+                    <div
+                        className="text-2xl p-4 cursor-pointer hover:bg-gray-700"
+                        onClick={() => setView('chat')}
+                    >
+                        <i className="fas fa-comment"></i>
+                    </div>
+                    <div
+                        className="text-2xl p-4 cursor-pointer hover:bg-gray-700"
+                        onClick={() => setView('calls')}
+                    >
+                        <i className="fas fa-phone"></i>
+                    </div>
+                    <div
+                        className="text-2xl p-4 cursor-pointer hover:bg-gray-700"
+                        onClick={() => setView('settings')}
+                    >
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div
+                        className="text-2xl p-4 cursor-pointer hover:bg-gray-700"
+                        onClick={() => setView('status')}
+                    >
+                        <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" fill="none"><title>status-v3</title><circle cx="12" cy="12" r="6" fill="currentColor"></circle><path fill-rule="evenodd" clip-rule="evenodd" d="M20 12C20 12.9267 19.8424 13.8166 19.5526 14.6444C19.3824 15.1305 19.5352 15.6866 19.9709 15.9613C20.4736 16.2782 21.1446 16.0964 21.3551 15.5406C21.7719 14.44 22 13.2466 22 12C22 7.15998 18.5615 3.12307 13.9941 2.19883C13.4118 2.08101 12.9 2.55153 12.9 3.14558C12.9 3.66061 13.2896 4.08652 13.7916 4.20139C17.3473 5.0149 20 8.19767 20 12ZM12 20C14.2014 20 16.1951 19.1108 17.6416 17.672C18.0063 17.3094 18.5733 17.208 19.0083 17.4823C19.5115 17.7995 19.6362 18.4841 19.2249 18.9138C17.4045 20.8156 14.8406 22 12 22C9.13243 22 6.54677 20.793 4.72334 18.8594C4.31526 18.4266 4.44515 17.7429 4.95068 17.4295C5.38777 17.1585 5.95401 17.2641 6.31591 17.6295C7.76573 19.0933 9.77697 20 12 20ZM3.9996 15.9013C4.43726 15.63 4.59424 15.075 4.42776 14.5877C4.15046 13.776 4 12.9056 4 12C4 8.19767 6.65269 5.0149 10.2084 4.20139C10.7104 4.08652 11.1 3.66061 11.1 3.14558C11.1 2.55153 10.5882 2.08101 10.0059 2.19883C5.4385 3.12307 2 7.15998 2 12C2 13.2201 2.21851 14.3892 2.61853 15.4702C2.82479 16.0276 3.49447 16.2145 3.9996 15.9013ZM12.0438 2.00009L12 2L11.9562 2.00009H12.0438Z" fill="currentColor"></path></svg>
+                    </div>
+                    <div
+                        className="text-2xl p-4 cursor-pointer hover:bg-gray-700"
+                        onClick={() => setView('profile')}
+                    >
+                        <i className="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            );
+        };
+
+        const Profile = () => {
+            return (
+                <div className="flex-1 flex flex-col items-center justify-center bg-gray-800 p-5 text-white">
+                    <img 
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3XcbkFgxOouPmD6G4nVVg_S5mzJ67bjQwydcZOi1xzpIOSiyZdlyRNiwxIgTqf8zSeNo&usqp=CAU" 
+                        alt="Profile Picture" 
+                        className="rounded-full w-32 h-32 mb-4"
+                    />
+                    <div className="text-xl font-bold mb-2">Felix Lengyel</div>
+                    <div className="text-gray-400 mb-4">felix@example.com</div>
+                    <button className="bg-blue-500 px-4 py-2 rounded-lg">Edit Profile</button>
+                </div>
+            );
+        };
+        
+        
+
+        const ChatList = ({ setSelectedChat }) => {
+            const chats = [
+                { id: 1, name: 'Rahma ❤', lastMessage: 'Silenced video call', time: '18:06' },
+                { id: 2, name: 'Budi', lastMessage: 'See you tomorrow!', time: '17:30' },
+                { id: 3, name: 'Siti', lastMessage: 'Where are you?', time: '16:45' },
+            ];
+
+            return (
+                <div className="flex-1 overflow-y-auto">
+                    {chats.map(chat => (
+                        <div
+                            key={chat.id}
+                            className="p-4 cursor-pointer hover:bg-gray-700 flex justify-between"
+                            onClick={() => setSelectedChat(chat)}
+                        >
+                            <div>
+                                <div className="font-bold">{chat.name}</div>
+                                <div className="text-gray-400">{chat.lastMessage}</div>
+                            </div>
+                            <div className="text-gray-400">{chat.time}</div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const CallList = () => {
+            const calls = [
+                { id: 1, name: 'Rahma ❤', callType: 'Incoming', time: '07:19' },
+                { id: 2, name: 'Budi', callType: 'Outgoing', time: '06:50' },
+                { id: 3, name: 'Siti', callType: 'Missed', time: '05:30' },
+            ];
+
+            return (
+                <div className="flex-1 overflow-y-auto">
+                    {calls.map(call => (
+                        <div
+                            key={call.id}
+                            className="p-4 cursor-pointer hover:bg-gray-700 flex justify-between"
+                        >
+                            <div>
+                                <div className="font-bold">{call.name}</div>
+                                <div className="text-gray-400">{call.callType}</div>
+                            </div>
+                            <div className="text-gray-400">{call.time}</div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const ChatWindow = ({ selectedChat, showCalls }) => {
+            const [messages, setMessages] = useState({
+                1: [
+                    { id: 1, text: 'Halo', time: '22:10', sender: 'other' }
+                ],
+                2: [
+                    { id: 1, text: 'See you tomorrow!', time: '17:30', sender: 'other' }
+                ],
+                3: [
+                    { id: 1, text: 'Where are you?', time: '16:45', sender: 'other' }
+                ],
+            });
+
+            const sendMessage = (text, chatId) => {
+                const newMessage = {
+                    id: messages[chatId].length + 1,
+                    text,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    sender: 'me'
+                };
+                setMessages({
+                    ...messages,
+                    [chatId]: [...messages[chatId], newMessage]
+                });
+            };
+
+            if (showCalls) {
+                return (
+                    <div className="flex-1 flex items-center justify-center">
+                        <div className="text-gray-400 text-lg">Menampilkan riwayat panggilan</div>
+                    </div>
+                );
+            }
+
+            if (!selectedChat) {
+                return (
+                    <div className="flex-1 flex items-center justify-center">
+                        <div className="text-gray-400 text-lg">Pilih chat untuk memulai percakapan</div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="flex-1 flex flex-col bg-gray-700 p-5">
+                    <div className="bg-gray-800 p-4 rounded-lg mb-4">{selectedChat.name}</div>
+                    <div className="flex-1 overflow-y-auto space-y-4">
+                        {messages[selectedChat.id].map(message => (
+                            <div
+                                key={message.id}
+                                className={`bg-white text-black p-4 rounded-lg max-w-xs ${message.sender === 'me' ? 'self-end bg-blue-400' : 'self-start'
+                                    }`}
+                            >
+                                <div>{message.text}</div>
+                                <div className="text-right text-gray-600 text-sm">{message.time}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-4 flex">
+                        <input
+                            type="text"
+                            placeholder="Type a message"
+                            className="flex-1 p-2 rounded-lg bg-gray-600 text-white mr-2"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    sendMessage(e.target.value, selectedChat.id);
+                                    e.target.value = '';
+                                }
+                            }}
+                        />
+                        <button
+                            className="bg-blue-500 px-4 py-2 rounded-lg"
+                            onClick={() => {
+                                const input = document.querySelector('input');
+                                sendMessage(input.value, selectedChat.id);
+                                input.value = '';
+                            }}
+                        >
+                            Send
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const Sidebar = ({ setSelectedChat, showCalls }) => {
+            return (
+                <div className="w-80 bg-gray-800 flex flex-col">
+                    <div className="p-4 bg-gray-900">
+                        <input
+                            type="text"
+                            placeholder="Search or start a new chat"
+                            className="w-full p-2 rounded-lg bg-gray-700 text-white"
+                        />
+                    </div>
+                    {showCalls ? <CallList /> : <ChatList setSelectedChat={setSelectedChat} />}
+                </div>
+            );
+        };
+
+        //setting
+        const Settings = () => {
+            return (
+                <div className="w-80 bg-gray-800 flex flex-col gap-4 ">
+                    <div className="p-4 bg-gray-900 text-white">
+                        Settings
+                    </div>
+                    <div class="settings p-4 flex text-white gap-4 items-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3XcbkFgxOouPmD6G4nVVg_S5mzJ67bjQwydcZOi1xzpIOSiyZdlyRNiwxIgTqf8zSeNo&usqp=CAU" alt="Profile Picture" class="rounded-full w-16 h-16" />
+                        <p>Felix Lengyel</p>
+                    </div>
+                    <div className="p-4 ">
+                        <div className="flex text-white gap-4 items-center hover:bg-gray-600 rounded-lg">
+                            <i class="fas fa-user-circle text-white"></i>
+                            <p className="p-4 border-b w-full">Profile</p>
+
+                        </div>
+                        <div className="flex text-white gap-4 items-center hover:bg-gray-600 rounded-lg">
+                            <i class="fas fa-lock"></i>
+                            <p className="p-4 border-b w-full">Privacy</p>
+
+                        </div>
+                        <div className="flex text-white gap-4 items-center hover:bg-gray-600 rounded-lg">
+                            <i class="fas fa-comment"></i>
+                            <p className="p-4 border-b w-full">Chats</p>
+
+                        </div>
+                        <div className="flex text-white gap-4 items-center hover:bg-gray-600 rounded-lg">
+                            <i class="fas fa-bell"></i>
+                            <p className="p-4 border-b w-full">Notification</p>
+
+                        </div>
+                        <div className="flex text-white gap-4 items-center hover:bg-gray-600 rounded-lg">
+                            <i class="fas fa-question-circle"></i>
+                            <p className="p-4 border-b w-full">Help</p>
+
+                        </div>
+                    </div>
+                </div>
+
+            )
+        }
+
+        const Status = () => {
+            return (
+                <div className="w-80 bg-gray-800 flex flex-col gap-4 overflow-y-auto">
+                    <div className="p-4 bg-gray-900 text-white">
+                        Status
+                    </div>
+                    <div class="settings p-4 flex text-white gap-4 items-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3XcbkFgxOouPmD6G4nVVg_S5mzJ67bjQwydcZOi1xzpIOSiyZdlyRNiwxIgTqf8zSeNo&usqp=CAU" alt="Profile Picture" class="rounded-full w-16 h-16 border-2 border-green-500" />
+                        <p>You</p>
+                    </div>
+                    <div class="settings p-4 flex text-white gap-4 items-center">
+                        <img src="data:image/jpeg;base64,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" alt="Profile Picture" class="rounded-full w-16 h-16 border-2 border-green-500" />
+                        <p>Windah</p>
+                    </div>
+                    <div class="settings p-4 flex text-white gap-4 items-center">
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxITEhUSEhIVFRUVFxUYFRUXFRUVFRcXFRUXFhUYFRYYHSggGBolHRUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGBAQGi0lHSUtLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsrLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAcAAABBQEBAQAAAAAAAAAAAAADAAIEBQYBBwj/xABBEAABAwIDBQUDCgUEAgMAAAABAAIRAwQFITESQVFhcQYTIoGRMqGxBxRCUnKCksHR8BUjYqLxM0PC4XOyNFNU/8QAGgEAAwEBAQEAAAAAAAAAAAAAAQIDAAQFBv/EACQRAAICAgIBBQEBAQAAAAAAAAABAhEDIRIxUQQTIjJBYSNx/9oADAMBAAIRAxEAPwDxlMcnJhUxgU5ogKFvRGpmZD0xOTUEY7SKIEKkiBZmOuXQ0pP0R6SxgbOeqKGmJmPKFZCi07s0A285HRYDAsH9RKdsDej07bacGNlzjpC2WC9maVIB9eHv3N+gPL6R6+iEpKPZoxcujFW2HVKn+nSc/mBl+I5e9SKuEVme2GtPAuk+6V6HXu9zQAOCocQpl5Kk8peOD+mRqW72xMZ8+CE+hy/TyV0bWoD7M8yJHWIzUSvTgRwOQ1y/YTKdiyhRAFrOnvR24W8gCQrMWQIBESXbM7tCSc+ALPxclIo0Hta1zm+F0gHcS0kEHg7keKWU3+GUfJUNwRx+kjswA/XV01iOxi5pZ5r9LRxRZSs7PDe4o9Ps5T4lXTKaOymoy9RPyOsMfBTM7PUeZ80dmAUPqq4bSRWUFJ55+R1ij4KhuCUPqBFZhdIf7Y9FcNtiiC1U3ml5G9uPgpv4bS+oPRJXXzRcS+8/IfbXg8aTXLqaV755gIojUIojU7Ah6aU8JpCUIqKeQmUt6KszHTopduFE3KZbLIzLSmMpUetW5ZcUYuyhRX5mNyPQvbNF2TZsNc8jMxHTP9+Sun3BKrcPpFtNoP74KQXwuafZ2Y18SQXoLRJzQTVRbZ+ajJl4RJptwREa8yEqGBU52nDaPMmB0kqRSbO+FYUQoc3+FOCfZOsOzFF1MN2IEGOUgg+5zvWVaYP2bZTa+lVb3lOpqYEB0AF3EFxk8J03TIwK4AbBCvWOC53KV1YZJJaR5N2n7NvtKmUupPnu3e/Zd/V8fVVbGr2rFsNZc0nUnaOGR3tIzDhzBXjd9bPo1HUqgh7DBjQ7wRyIIPmq25IgqQ+m1SqbFXsrKRTuFGUWUTLGmxSabFX07oKRTuxxUZRZRNFiyijMtwq9l2EUXg4qTjIa0T/m4SUL56OKSHGRrR4UmlOTSvqkeMBRGoaK1MwIeE1OCaUoTlJFQqaKszDxorSyYAAd59wVdQbMSrTajVZAkKs5KwZtPaAMyQPfkg1RzV92MswaveGfDpllnv6/qszRNLdUNkDLd6KsqBaW/peFZ+tlpmuaaOvGyMAeCPRpkbveVxjTrE9FMtxyUJHTFky1B0g+Snsp56+uSDbZf9rRWtgXtyh2Q/ceS55aLJ2cwuqRkVfW9fJYp9bu37JkR5LW4RLmh2vPepTX6PSrZfUDlKxHyoYTtU23TR4qcNqc2E+Eno4/3clubdmUhR8VtBVo1KR0exzT94EJo3FpnC6bPnz52nNveaqcSLmOIKg/PCvQ9iyXu0alt+iNxBZIXxRG3yV+mN7xrW4giNvuay9K6KsbUkpX6ZIPvF189PFdUL5u5JL7ETe6zAJpTkwr0TlBIrUJPaUzAgwQ3Lu0mlKgnaaIh0kSVmYk2YzHVWlT9/8ASjYJh9WqT3VNz4IkjQdSchMKVXpObIcIIMfBFCyTIlXVbPsZZEMc/wCvEDof36LGOzK9OwSiW0aY0gD4JZDRGYzf7Azk7st/msbWxsyd3ILWYs5ocQ4bpjiVkbq3DnE6chuSOv0rG30Fsu0mzu6SPD0I3hSW9oxtAgeE7iRLTwneOBVW7DWHR5B5odXCSB7XTXPop8cbL8siNzhuLh2UjPcdfJavDHS3aY7QSY4l2X5rxQbTCM9Ct52WxBzRMzO7jlAXPmxUrRfFk5OjW3VEVKric9lgc7jv/RWOB4lEAsLYyDRmd0SBqc1i6uPGlUqFxMwfOMwPes7X7WA1NraePsujRSWGUkV5wTqTPfbe5Dsxv3hFru8JPJeYdne3G2c3Nj6pGnRw/Nbm2xqnXolzDv2SN4KjKMo2mTeNNpx6PnvtKB3r/t1B6OVC4q6xh+3tP3lxd+IknrqFSlq9rH9TzZvbGynMK5sJzWqmiZPtVqsBttpwWUtVrez10GuChl6KRNl/BhwSRv4wOKS4tltHgaY5OTXL0Uc4JOampwTMCOlJJclAI+jqUSEKlqioMxsezOHl9HeA0OqGMi4zstE/dQ8WoOAa92ZfxzOUTPPMK27N1jTsmOGry4TyBd+ipLtpLNvQFxA58/UKa+xea/zIdrSLqrW8XNk8t69PoN8AgCMoHTevOMHb/PZ1j3L1Gyp+ESMoTSIxMniz/E7iVUvswRJOe8Tl7loMQYO8O9QqlqNYPquZypnZGNpFfiNoyqKQpt2dn2hEidoTprIynURzV/jlC3ZbUHM2dtzSK9Fgd4Dmab2k6OAhpzM84JMIUxqcuplRMSunEQ3aPlsj9UluVIooKOzN4lXz2BmRElbTsKdpueoMLHssjtZ671seyFPYd5hVzV7ZPAm8hcdvcNbSaCNXR75GXvWBdYUjqDzIXsPbuxNSg18HJomBmJGUg9F5liGHirSpik8B42tuRBk7MGDAcMnCAcp04c/p5/GrL5o3uitbglVhD6UvAzy9uOm9bTs3fOpW1xVmQKRLdfbzaAZ0IJCPiFhTtbe0q04D3vLa1JjzUa1p2yyoMzsVGgNBIMGSDKHjjQyxdGXf1GjIRoTUd/6e9ac+bUX5NGKjByWjzi+dDQ395KCGqdf5ujggBq710eWwGynBqMGLuwjYBUVZ2deFXNCNTclasNl9/ETxSVN3iSTgg8jNpjt6cmOVwDF0Jq6Ewp2UklxAISjqjhAo6o4SvsKNTht0TasA/wBtz2u++S4H4pr3l1JwII7uPCctdTHoVVYJe92/P2XQHTprkfL9VusetHOLHEgx4TkAdnftcdSpvTs6FJShxZlMEfFZrufxXplleDZHTRedYXZuFyWEHwn1G4+YzWtGRCMiMQGIvBeeCZM71GuQS9S3Ui1o5rncbdnWp0kkDazPLX3pt+BSZJ9p2QG8n9FOY1tFm285n95KgvL0vqNdAIEgToDzSxXKX8LSfGP9G2VqSc960uBUoqt3AET6rLPxhzXQaYI4tP5Fa3AcUpOLqhjNo1471TL9SeF1M9VbRDm7DyCHDLpA9TqvP8a7LupVCWjwkyDBgemYWwuMdtu6DBXYKvdyxpcNraa2RA6gKdgl225otqb9Hcjv8lwK09FrcdyWjPYNhJNMMc4OG8ZHyLoHwlUnyk0G0advSAGyO8dw9kASefjheivc1pjIHWBw6cF5T8sGJA1G0wfZbH4jJHub6o4Y/wCiFz5XKD8HmNR0uJiJJMJBNCeF6p5gkikUljCCcFwJwWAzqSSSwDPprk8obk6GGLoXF1MKdXF0LiAQlDVHQKGqkMEmEr7Cg1uzI+QCv8N7QPawMqS5rfYP0mjcDxHwVLT4DREoUy4hu8kD1MINGTaZvrCqD4zAkN5cAuXlb+YOEprqYYS0boj9+qj03S/NK9jR0yydRG23KZLZjmfgAn39YGpnk2mPU7l2zf8AzJPD4Kivb6do/WcSOm798kso2qHhKnfgDil4Xulx00G4KuJlHqUjEnKV21exhBdn74SaXRZcpdgrLDy97WmfE5o9SAtBY4bTZdNaRLS/ZgmRnIEjrC5RvGNcx4AIBadIORnLcNPcrEPp1HbbHjM7QzAIcHEjLURJUpzf6Xhh8PZpbbDqJq7RYA45boGcEgcVoeylHuKta3nIEPZO9p/zHkq2nsVC6pTII1JGoOUfmrq1eC6nW/oe13lDh+a42y0+uLB3FfYe4xxnfOZIE8iSvCu2GI99cVHzMvIHQeGfcF692yve6o160wGtIbze/wAIPlIK+f6lUl2a6fRwtuRz+sn8YxDtKeEJhRQu8886kkkgY6E4JoTgsBjoSXElhSichVEUodRMhwS6uLqcUSSSSAR9LVSGqPR1UhLIKDWpzWg7JWveXdMRIbtOd91pj+7ZWbadVvvkztp76udwDB1Pid8GpW9B/Sfi4h8/vkq6m/NW2LCZVEXFpg+XNBBJrrqNn7L/AIb1StqSWzuUyqc2H7Q9QodNuyeizDHRKuHylaAEwVGDipltQy25yUZaOmLfZc21lTPtOjyU+2wimT4DOvsnOeY81lbuqYyB9UfBL99N4gn1y9FJxlVnTHLTo9BwrCq1B7qtNwfTc2KtI5PjOHM3EiJjLIqXhOIbdF4G4uA88vzUzC8QbUALtY/yqmg5rNoN3vJ/un9FyN3dlZd2Z/5UMSPctog6uk/d/wCz7l5OdVse2l/3tZ8ZhkNB6e17yfRY12q9P08OMEjys8uU2SaZRgVHposqpIIkSg96Fw1QsYkAp7VGFVPFVahWSFxC71JYBUBCqr0an8mDh/qXlNv2adVx94Ck0/k3tPp3lQ/Zo7PvJKKGs8sXQvW6fYTDGaurv+8xv/FSKPZ3CGa0fx1yT6Nd+Sa0Lf8ADxyF0NXtdM4TT0taJjix9Qn8QUil2jtmmKVtTbEmRSY2ABPCdy2jcn4PFrSxquPhpvd0aT8FcWXZS9qzsW78tS4bIA4kuiF6Nddo7qo8UgWsDiM26BpE5eRVIe0z3+EEimPZboPtOA1cdSefCApyl4KQi32VWG9hKxfFZzGNynZcHnoIylegWtlTt6Pd0xDR6k7yearcGvtomTr/AI/JWV/UyU93sZ1+FDXfmVFrUGvEHdvQr+vsulB+czoUbG4kW4a5hg5jcUB7s54qZWfOqgvpxmPRNYtHAOaIKriOABQHVhkPcUbbEa5b0kisW6LanSGw4/ZIBzCu6uDCpSbVYIcCBlv3eqoKdy0tDZg/ktlgl02AwGdmOkxJPTVc2RtbOnHvQW2qGm0NdOm7VZ/tHj3cNcGn+a+Q0fVByLvyCvcevwyk94ElrZO4cB+Q815JdV3VHl7zJJz/AOuSXDjU3bNmyOKpBqp8JVQ/VXFUeE9FUP1Xonmhqa7VOS5TTqgyQCQpSDlzYPBLYPBEwVrk7vIUfahcRSsRskd+khZJJuKBZ722xyLYyPuPEc1Bfh7mHPMHy8+q1AaAmV6YIhefyOujIVKBGSg3VkStPdW/uUF1JOpC0ZCrbkFJlHNvVaO5swVWVaOyQeBB96opC0AuapDXOGvdkDyAE+Qz8llHNIOS1F4wyRwJB88iqR1BBOikVaD4Jflj2zx+P7C1N3cyJlYCvV2XQrezxEluydVR9WTrYTEDKhtMFGrGUN7MlFvZ0JaCuQ3IVOoQj5EJ7E4kQ0wdfenC0B3HyJ+CkMtidAiNs3zAB8kjkOokRlk6fDPmP0WgwahUYfHUAB1a2S4+uiPYYG9wBcSOpK0mD4I0OEhc+TKqo6MeL9DV+yda8tXNpvbTJc0w+fE0SQCRoSYOm4LzvG+xV7ayatB2yPpt8bPxNmPOF7xgt2JLQI2SWnyMacPZPQq72kcOTjE5s/ymz5Xqs8JVRUbmvpzH+xlldA7dIMef9ynDHdSBk7zC8t7RfJJdUpfbuFwzgPDVH3Tk7yPkuuOaLOdwaPOaYRYT69q+m4se1zXDItcC0jqCmwqCjYQ6qMQo9dZAIVV2aQXHhdCqhGdXU2UkQH0zCE4kKWGoN1SyXlnYRKzAcwquvTgqd3q5VaHDmEyMVpaod1azPNWTKe5ONHJNYCjFhtQY9psH7TcvyHqs1ibNhzhEZ6dc16PY24Liw/S8TftNGY8ws92zwiQKjfo+1zaTl6E/3ckOWx4nnXcy6U+kCDkOvRWvzSFDeyHKylZnGiXbtlShbmFHtmlo8DQc9JjrCureDIBEiJG8TpKjJlooobmjBTabFb4nawJCg2jM0U9CtbLKwokgLTWVkAMxnvVfgdHPRXlaoGtkrlySd0dONIaHgEBXuGUpcOfw3rO4XTLnlx0lbHB6PtcgBPM5/p6qMl+FW6jZEoNi6rwYEtnr3VNanayB4gH1Cx1hVDqlR057dT+1xaPc0LYOyAHAD3BdKVI86XY1xQjXhdqOUWu4LAIuMYZa3bdi4pNfGjjk8A/VeMwvPO0HyTVGy+yqd43/AOt5Af8Addo7zhb5zs1Ks7otPJUjOUehXFM+dL7DalJxZVY5jhq1wLT6FVlwxfU+MYRb3tLu6zAfquGT2Hi07umi8N7b9h61k6SNukT4KoGXR31Xcl048ikRlGjzx7U2FNr0YUVzV0IRoHCSfCSItH1Q6ih1qWSkVn6oFWpkvLOwzd22HFDaYRb0+MoUp0KdpHPNSjSUREbWKxiXQobUAGHAgtPAjMLmIsFSnthuTgQW7g7MOafej2zhII4qWGNDyw+xWzHAVMg4eeRSsZHlV1Q2SQfJVFzTzW77R4TBMDME+Z4efx6rI1KUlMnRZfJDLRqtrGmxzpBBc3gcxO50buqgttiWkAwSCAeEjVS8PpimGktaHwWiD4Y9ok9A2f8AKDHQXEWkMHeQCTAInZPA8vNQqVuAtJc0S5lPwOl4JAAEgCDLp01HTRUdS3awmTBIJOZ0bEnlqEsZBlEu8F3ynXddrnnPIbhm6OMDNVduG+xJJbmRJ36bXHoVY4VWYWvqNbMETlBJdGyTlJGYSNfoyd6L7C6ZLQQwtEnJwh3KAOPP0Wia8W9B7tdhrnHeSQCfOdEKwoAta4QRAMjMZjiouO1toClOubvstgx+LZ8pUF8pD5H8aK/swJaxn0iWyePGfKVs6lSSs52coAOc+PZbA6uy+AKug5dMjhCOcodYI6RagYr3BcpnNPunwo7KiYxa0K0KbdWrLmk+hVEsqNIPLgRzBz8lRfOIVzg9WWbXEwPLJZaBLaPnPtXgT7Wu+i8ZtOR3OBza4ciFmKzF9D/K52e7+3+csE1KI8UammdfwnPoSvALpi7sUuSOeSIUJJ8JKwp9O16kOIUKtXyKJiL4eepVVWrSSvMR1MDVdJQ3Jy4QnFE1yeEOERqxiTbVYKsG/wAxpZMOEOYf6h+oy81Ugo9G4ggjJKwokYhS79gIyfv6j85WLvsNh5PPxDgePQ/HyW1NYEl40dG1/S6fa6fqhXtmHHbA8Q9obiCgPGVMxDqUfopNGg18BzQ6DIkTmiX9tsOjMtObTv5g8x+YO9csHDaGe9IzrjTNjZWweNrOQ0sA3CTtEj0HosF2gtmmo4OnIOaPMifPJegWFUBkxlGfVrjPxXn/AGj/ANZ/DaPoVPF9imToFh1P+YXbWsSI6DWeXBbPs1g1Kmww3J3tA5tMmc2nLlMbljcNkZbzp8QvQMPqjuvh8U2VsGNIvLa4aWwN273Klbbl+3VOhMN+w2Y9XF2e8QoNOqS8U2OMukuI3MBzI55gDmQdxWmoUpAboOWga0aJYRrZDM0tIHhtLYptG90vPwb+fqplNBfUzJ8h0GiLSOioznChi5UyRmBRrx+SximxKvuUNlVPvTJVbeXOyIGqdIAW4vYyGZ3DmtjZ+BoZ9UBvmB4j6ysRgVLarNcdGeM/dzHqYHmtPTuo1KEzIv6ZDgWuEgggg6EHIgr5y+UPs8bO6fTjwHxUjxY7TzGY8l79b3YWe+VDs+LyzL2CatCXtjVzY8bfQT1HNPhycWLOJ86bKSP3S6u+yB73itfaM8Sq/aTatWSuArgSOhjyuSuEpIgHpSmpwCBhPK5tLrhIhNLVghaVaPzVhbOyidZ2D/xKqTuHFSDV+ju/RAxy8tp2gWg55t0MjeDuKo7mxdShzc27nc+BG48lqabhUABMPGjvrATkeeijVqbhLXCQfaadDv8A2UJIpjyOP/CVhjgaZHCfeBl6rBdp2kV3cJ/ytpZnZBLSSJG0Dq2chPKd/wAFme0b2uqTyzUIakdzalC0Q8PGYC1AvYAAkzkAPaJ4dd/QSsnav8Qa0EkxAGp5LbYDh5DpqRtkRtDRg4Dz1O/0VJRsk8iiv6T+z2Gw8vdm8iXcBBJAbx1PUknLQaAt2RG/U/kEzD2wASIMRHH+pOrrHK3bsjVEWnonBicAsAMx2ShXUlTBoo72rGM/etIlZ1+ZMrX4lRyWTqthx6qkQMssKyZUdx2W+8uP/qFIZWUd3go0x9YvceggD4FAfWSvYUX1Crlkre0u9FmbCrlKtbF+02RuSNDE3+B2f/5qP4QkltLqNsFGGau70klYQedFxqSSxgm5dakkgA4EkklgjRqE86pJLBCtVpiOrehSSSsBBw3/AF3fYf8ABY3Gvad0/NdSU19jqw/VhOx3/wAj7h+K3tp/ySSVWQl2y/dr6fBDfvSSUwI63RIpJLBHt0THapJLAIGJaeSx1x7Z6pJJ4gZYYr7FH/x/83KBceykkt+GJ+G+wrfA/ZPVJJKwlgkkklGP/9k=" alt="Profile Picture" class="rounded-full w-16 h-16 border-2 border-green-500" />
+                        <p>Trevor</p>
+                    </div>
+                    <div class="settings p-4 flex text-white gap-4 items-center">
+                        <img src="https://yt3.googleusercontent.com/DQKHWL4ZSGJdb_XOc3MjWQrLwDuUwdmqTp7BKahvdTYEazfp0PqRF79eaHbsCPhPyGecLjL9UsM=s900-c-k-c0x00ffffff-no-rj" alt="Profile Picture" class="rounded-full w-16 h-16 border-2 border-green-500" />
+                        <p>Kai</p>
+                    </div>
+                    <div class="settings p-4 flex text-white gap-4 items-center">
+                        <img src="https://content.imageresizer.com/images/memes/ishowspeed-rage-meme-3.jpg" alt="Profile Picture" class="rounded-full w-16 h-16 border-2 border-green-500" />
+                        <p>Speed</p>
+                    </div>
+
+
+                </div>
+            );
+        }
+
+
+
+
+        const App = () => {
+            const [view, setView] = useState('status');
+            const [selectedChat, setSelectedChat] = useState(null);
+        
+            const renderSidebar = () => {
+                if (view === 'settings') {
+                    return <Settings />;
+                }
+                if (view === 'status') {
+                    return <Status />;
+                } else {
+                    return <Sidebar setSelectedChat={setSelectedChat} showCalls={view === 'calls'} />;
+                }
+            };
+        
+            return (
+                <div className="flex h-screen text-white">
+                    <IconsSidebar setView={setView} />
+                    {renderSidebar()}
+                    {view === 'profile' ? (
+                        <Profile />
+                    ) : (
+                        <ChatWindow selectedChat={selectedChat} showCalls={view === 'calls'} />
+                    )}
+                </div>
+            );
+        };
+        
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
